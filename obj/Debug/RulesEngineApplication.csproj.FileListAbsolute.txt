@@ -9,3 +9,10 @@ C:\Users\erics\source\repos\RulesEngine - Copy\obj\Debug\RulesEngineApplication.
 C:\Users\erics\source\repos\RulesEngine - Copy\obj\Debug\RulesEngineApplication.exe
 C:\Users\erics\source\repos\RulesEngine - Copy\obj\Debug\RulesEngineApplication.pdb
 C:\Users\erics\source\repos\RulesEngine - Copy\bin\Debug\Resources\Rules_Test_csv.csv
+C:\Users\erics\source\repos\RulesEngine\bin\Debug\Resources\Rules_Test_csv.csv
+C:\Users\erics\source\repos\RulesEngine\bin\Debug\RulesEngineApplication.exe.config
+C:\Users\erics\source\repos\RulesEngine\bin\Debug\RulesEngineApplication.exe
+C:\Users\erics\source\repos\RulesEngine\bin\Debug\RulesEngineApplication.pdb
+C:\Users\erics\source\repos\RulesEngine\obj\Debug\RulesEngineApplication.csproj.CoreCompileInputs.cache
+C:\Users\erics\source\repos\RulesEngine\obj\Debug\RulesEngineApplication.exe
+C:\Users\erics\source\repos\RulesEngine\obj\Debug\RulesEngineApplication.pdb
