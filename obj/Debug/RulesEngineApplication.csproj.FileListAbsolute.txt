@@ -1,13 +1,3 @@
-C:\Users\erics\source\repos\RulesEngine\obj\Debug\RulesEngineApplication.csprojAssemblyReference.cache
-C:\Users\erics\source\repos\RulesEngine\obj\Debug\RulesEngineApplication.csproj.CoreCompileInputs.cache
-C:\Users\erics\source\repos\RulesEngine\bin\Debug\Newtonsoft.Json.dll
-C:\Users\erics\source\repos\RulesEngine\bin\Debug\Newtonsoft.Json.xml
-C:\Users\erics\source\repos\RulesEngine\obj\Debug\RulesEngineApplication.csproj.CopyComplete
-C:\Users\erics\source\repos\RulesEngine\bin\Debug\RulesEngineApplication.exe.config
-C:\Users\erics\source\repos\RulesEngine\bin\Debug\RulesEngineApplication.exe
-C:\Users\erics\source\repos\RulesEngine\bin\Debug\RulesEngineApplication.pdb
-C:\Users\erics\source\repos\RulesEngine\obj\Debug\RulesEngineApplication.exe
-C:\Users\erics\source\repos\RulesEngine\obj\Debug\RulesEngineApplication.pdb
 C:\Users\erics\source\repos\RulesEngine - Copy\bin\Debug\RulesEngineApplication.exe.config
 C:\Users\erics\source\repos\RulesEngine - Copy\bin\Debug\RulesEngineApplication.exe
 C:\Users\erics\source\repos\RulesEngine - Copy\bin\Debug\RulesEngineApplication.pdb

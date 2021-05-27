@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RulesEngineApplication
 {
@@ -20,6 +17,7 @@ namespace RulesEngineApplication
                 Console.WriteLine("Loading Rules... \n");
                 var rules = new List<Rule>();
 
+                //Loads a local copy of the rules file
                 var file = File.OpenRead(@"Resources\Rules_Test_csv.csv");
                 var reader = new StreamReader(file);
 
@@ -35,7 +33,7 @@ namespace RulesEngineApplication
                     var rule = new Rule();
                     var conditions = new List<Condition>();
                     var actions = new List<Action>();
-                   
+
                     for (int i = 0; i < rule_values.Length; i++)
                     {
                         if (i < 4 && !string.IsNullOrEmpty(rule_values[i]))
@@ -60,7 +58,7 @@ namespace RulesEngineApplication
                                         }
                                         else
                                         {
-                                            Console.WriteLine($"Rule #{ruleCount+1} Error: Credit score has invalid Data");
+                                            Console.WriteLine($"Rule #{ruleCount + 1} Error: Credit score has invalid Data");
                                         }
                                     }
                                     else
@@ -116,7 +114,7 @@ namespace RulesEngineApplication
                                     }
                                     else
                                     {
-                                        Console.WriteLine($"Rule #{ruleCount+1} Error: Interest Action has invalid data");
+                                        Console.WriteLine($"Rule #{ruleCount + 1} Error: Interest Action has invalid data");
                                     }
                                     break;
                                 case 7: // Action Disqualification Change

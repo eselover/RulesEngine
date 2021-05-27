@@ -1,10 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace RulesEngineApplication
 {
@@ -42,7 +36,7 @@ namespace RulesEngineApplication
             Console.WriteLine("Please enter the base interest rate of the product (e.g 5.0): ");
             string interest_rate_string = Console.ReadLine().Trim();
 
-            if(decimal.TryParse(interest_rate_string, out decimal result))
+            if (decimal.TryParse(interest_rate_string, out decimal result))
             {
                 product.interest_rate = result;
             }
@@ -64,7 +58,7 @@ namespace RulesEngineApplication
             Console.WriteLine("Please enter the person's credit score: ");
             string credit_score_string = Console.ReadLine().Trim();
 
-            if(int.TryParse(credit_score_string, out int result))
+            if (int.TryParse(credit_score_string, out int result))
             {
                 person.credit_score = result;
             }

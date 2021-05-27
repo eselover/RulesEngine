@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RulesEngineApplication
 {
@@ -19,9 +16,9 @@ namespace RulesEngineApplication
         {
             List<Action> actions_to_execute = new List<Action>();
 
-            foreach(var rule in rules)
+            foreach (var rule in rules)
             {
-                foreach(var condition in rule.conditions)
+                foreach (var condition in rule.conditions)
                 {
                     switch (condition.property_id)
                     {
@@ -40,11 +37,11 @@ namespace RulesEngineApplication
                         default:
                             break;
                     }
-                    if(rule.all_conditions_needed)
+                    if (rule.all_conditions_needed)
                     {
-                        if(rule.conditions.All(x => x.conditions_met))
+                        if (rule.conditions.All(x => x.conditions_met))
                         {
-                            foreach(var action in rule.actions)
+                            foreach (var action in rule.actions)
                             {
                                 actions_to_execute.Add(action);
                             }
@@ -52,9 +49,9 @@ namespace RulesEngineApplication
                     }
                     else
                     {
-                        if(rule.conditions.Any(x => x.conditions_met))
+                        if (rule.conditions.Any(x => x.conditions_met))
                         {
-                            foreach(var action in rule.actions)
+                            foreach (var action in rule.actions)
                             {
                                 actions_to_execute.Add(action);
                             }
@@ -77,7 +74,7 @@ namespace RulesEngineApplication
             var original_product_interest_rate = product.interest_rate;
             string interest_rate_changes = "";
 
-            foreach(var action in actions)
+            foreach (var action in actions)
             {
                 switch (action.property_id)
                 {
