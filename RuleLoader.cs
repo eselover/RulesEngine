@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 
 namespace RulesEngineApplication
@@ -18,7 +19,14 @@ namespace RulesEngineApplication
                 var rules = new List<Rule>();
 
                 //Loads a local copy of the rules file
-                var file = File.OpenRead(@"Resources\Rules_Test_csv.csv");
+
+                var filePath = ConfigurationManager.AppSettings["RulesPath"];
+                if (filePath == "[Enter Path Here]")
+                {
+                    Console.WriteLine("Path to rules file invalid please input the full path of the rules file: ");
+                    filePath = Console.ReadLine().Trim();
+                }
+                var file = File.OpenRead(filePath);
                 var reader = new StreamReader(file);
 
                 //Skip First two rows of CSV
