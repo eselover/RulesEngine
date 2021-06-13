@@ -6,141 +6,152 @@ namespace RulesEngineApplication
 {
     class RulesEngine
     {
+        private Product _original_Product_ref { get; set; }
+        private string _calculation_string { get; set; } = String.Empty;
+        
         /// <summary>
-        /// Iterates over each rule object and compares the rule values against its associated object properties
+        /// Initializes a copy of the product object for reference of the original inputed data
         /// </summary>
-        /// <param name="person">A Person object to compare the rules to</param>
-        /// <param name="product">A Product object to compare the rules to</param>
-        /// <param name="rules">A list of Rule objects to iterate over</param>
-        public void RunRules(Person person, Product product, List<Rule> rules)
+        /// <param name="product">User inputed data of object Product</param>
+        public void SetOriginalProduct(Product product)
         {
-            List<Action> actions_to_execute = new List<Action>();
+            _original_Product_ref = product.Clone(product);
+            _calculation_string += _original_Product_ref.interest_rate.ToString();
+        }
+        /// <summary>
+        /// Returns the actions performed on the interest rate
+        /// </summary>
+        /// <returns>string calculations on interest rate</returns>
+        public string GetCalculationString() => _calculation_string;
 
-            foreach (var rule in rules)
+        /// <summary>
+        /// Recursively runs through each rule and performs the condition and the executes the action if the condition is true
+        /// </summary>
+        /// <param name="person"></param>
+        /// <param name="product"></param>
+        /// <param name="rules">List of strings of a condition and action seperated by ','</param>
+        /// <param name="index">For recursive use only</param>
+        public void RunRules(ref Person person, ref Product product, List<string> rules, int index = 0)
+        {
+            if (index < rules.Count)
             {
-                foreach (var condition in rule.conditions)
+                var rule = rules[index];
+                var condition_and_actions = rule.Split(',');
+                var propertyName = condition_and_actions[0];
+                var compareOperator = condition_and_actions[1];
+                var compareValue = condition_and_actions[2];
+                var actionProperty = condition_and_actions[4];
+                var actionOperator = condition_and_actions[5];
+                var actionValue = condition_and_actions[6];
+                //Check Condition
+                var checkPerson = Compare<Person>(person, propertyName, compareOperator, compareValue);
+                var checkProduct = Compare<Product>(product, propertyName, compareOperator, compareValue);
+
+                //Execute Action
+                if(checkPerson != null && checkPerson == true)
                 {
-                    switch (condition.property_id)
+                    ExecuteAction(ref product, actionProperty, actionOperator, actionValue);
+                }
+                else if(checkProduct != null && checkProduct == true)
+                {
+                    ExecuteAction(ref product, actionProperty, actionOperator, actionValue);
+                }
+
+
+                RunRules(ref person, ref product, rules, ++index);
+            }
+        }
+
+        /// <summary>
+        /// Gets the property to perform the action on, parses the operator of the action, and sets the new value based on the operator
+        /// </summary>
+        /// <param name="product"></param>
+        /// <param name="actionProperty"></param>
+        /// <param name="actionOperator"></param>
+        /// <param name="actionValue"></param>
+        private void ExecuteAction(ref Product product, string actionProperty, string actionOperator, string actionValue)
+        {
+            var properties = product.GetType().GetProperties().ToList();
+            if(properties.Any(x => x.Name == actionProperty.ToLower()))
+            {
+                var property = properties.Where(x => x.Name == actionProperty.ToLower()).First();
+                var propertyType = property.GetValue(product).GetType().FullName;
+                dynamic new_value = actionValue;
+                if(propertyType != typeof(string).FullName)
+                {
+                    new_value = TypeParser.GetValue(propertyType, actionValue);
+                }
+                if(new_value != null)
+                {
+                    var parseOperator = OperatorParser.ParseArthimeticOperator<dynamic>(actionOperator);
+                    if(parseOperator != null)
                     {
-                        case PropertyNameIDs.STATE:
-                            condition.conditions_met = Compare(person.state, condition.comparison_operator, condition.comparison_value);
-                            break;
-                        case PropertyNameIDs.CREDIT_SCORE:
-                            condition.conditions_met = Compare(person.credit_score, condition.comparison_operator, condition.comparison_value);
-                            break;
-                        case PropertyNameIDs.NAME:
-                            condition.conditions_met = Compare(product.name, condition.comparison_operator, condition.comparison_value);
-                            break;
-                        case PropertyNameIDs.INTEREST_RATE:
-                            condition.conditions_met = Compare(product.interest_rate, condition.comparison_operator, condition.comparison_value);
-                            break;
-                        default:
-                            break;
-                    }
-                    if (rule.all_conditions_needed)
-                    {
-                        if (rule.conditions.All(x => x.conditions_met))
+                        if (property.Name == "interest_rate" && parseOperator.Method.Name == "AssignValue")
                         {
-                            foreach (var action in rule.actions)
+                            if (property.CanWrite)
                             {
-                                actions_to_execute.Add(action);
+                                property.SetValue(product, ((dynamic)property.GetValue(product)) - _original_Product_ref.interest_rate + new_value);
+                                if (!string.IsNullOrEmpty(_calculation_string))
+                                {
+                                    _calculation_string = new_value.ToString() + _calculation_string.Substring(_original_Product_ref.interest_rate.ToString().Length);
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        if (rule.conditions.Any(x => x.conditions_met))
+                        else if (property.CanWrite)
                         {
-                            foreach (var action in rule.actions)
+                            property.SetValue(product, parseOperator.Invoke(property.GetValue(product), new_value));
+                            if (actionValue.ToLower() != "true" && actionValue.ToLower() != "false")
                             {
-                                actions_to_execute.Add(action);
+                                if (parseOperator.Method.Name == "AddValue")
+                                    _calculation_string += $" + {new_value}";
+                                else _calculation_string += $" - {new_value}";
                             }
                         }
                     }
                 }
             }
-
-            ExecuteActions(ref product, actions_to_execute);
         }
 
-
         /// <summary>
-        /// Executes each of the action
+        /// Parses the condition from the string rule, gets the property to check the operator for the condition and the value to check against
         /// </summary>
-        /// <param name="product">An object of Type Product that the actions will change the property values</param>
-        /// <param name="actions">List of actions for the conditions met</param>
-        private void ExecuteActions(ref Product product, List<Action> actions)
+        /// <typeparam name="T">The object to get the property and value information from</typeparam>
+        /// <param name="compareObject"></param>
+        /// <param name="propertyName"></param>
+        /// <param name="compareOperator"></param>
+        /// <param name="value"></param>
+        /// <returns>null if property name doesn't exist on the object or invalid data</returns>
+        public bool? Compare<T>(T compareObject, string propertyName, string compareOperator, string value)
         {
-            var original_product_interest_rate = product.interest_rate;
-            string interest_rate_changes = "";
-
-            foreach (var action in actions)
+            var properties = compareObject.GetType().GetProperties().ToList();
+            if (properties.Any(x => x.Name == propertyName.ToLower()))
             {
-                switch (action.property_id)
+                var property = properties.Where(x => x.Name == propertyName.ToLower()).First();
+                var propertyType = property.GetValue(compareObject).GetType().FullName;
+                dynamic new_value = value;
+                if (propertyType != typeof(string).FullName)
                 {
-                    case PropertyNameIDs.INTEREST_RATE:
-                        if (action.is_base_value_action)
+                    new_value = TypeParser.GetValue(propertyType, value);
+                }
+                if(new_value != null)
+                {
+                    var parsedOperator = OperatorParser.ParseOperator<dynamic>(compareOperator);
+                    if (parsedOperator != null)
+                    {
+                        if (property.Name == "interest_rate")
                         {
-                            Console.WriteLine("Base Interest rate is lower than the starting rate rule - setting base interest rate to rule requirements...");
-                            product.interest_rate = (product.interest_rate - original_product_interest_rate) + action.new_value;
-                            original_product_interest_rate = action.new_value;
+                            var result = (bool)parsedOperator.Invoke(_original_Product_ref.interest_rate, new_value);
+                            return result;
                         }
                         else
                         {
-                            product.interest_rate += action.new_value;
-                            interest_rate_changes += $" + {action.new_value}";
+                            var result = (bool)parsedOperator.Invoke(property.GetValue(compareObject), new_value);
+                            return result;
                         }
-                        break;
-                    case PropertyNameIDs.DISQUALIFIED:
-                        product.disqualified = action.new_value;
-                        break;
-                    default:
-                        break;
+                    }
                 }
             }
-
-            DisplayResults(product, original_product_interest_rate.ToString() + interest_rate_changes);
-        }
-
-
-        /// <summary>
-        /// Method to parse the 'Comparison Operator' string from a property
-        /// </summary>
-        /// <param name="current_value">The value to compare against the rule</param>
-        /// <param name="comparison_operator">The comparison operator as a string to compare the two values</param>
-        /// <param name="new_value">The rule value to compare an object to</param>
-        /// <returns></returns>
-        private bool Compare(dynamic current_value, string comparison_operator, dynamic new_value)
-        {
-            switch (comparison_operator)
-            {
-                case ">":
-                    return current_value > new_value;
-                case "<":
-                    return current_value < new_value;
-                case "<=":
-                    return current_value <= new_value;
-                case ">=":
-                    return current_value >= new_value;
-                case "==":
-                    return current_value == new_value;
-                case "!=":
-                    return current_value != new_value;
-                default:
-                    return false;
-            }
-        }
-
-        /// <summary>
-        /// Displays the result of the actions
-        /// </summary>
-        /// <param name="product">The object that has been changed via the actions</param>
-        /// <param name="interest_rate_changes">Breakout of Interest rate changes as a string</param>
-        private void DisplayResults(Product product, string interest_rate_changes)
-        {
-            Console.WriteLine($"\nProduct Name: \t{product.name}");
-            Console.WriteLine($"\nProduct Interest Rate: \t{product.interest_rate} ({interest_rate_changes})");
-            Console.WriteLine($"\nPerson Disqualified: \t{product.disqualified}");
+            return null;
         }
     }
 }

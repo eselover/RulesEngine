@@ -14,7 +14,11 @@ namespace RulesEngineApplication
 
             var person = GetPersonInformation();
 
-            rulesEngine.RunRules(person, product, rules);
+            rulesEngine.SetOriginalProduct(product);
+
+            rulesEngine.RunRules(ref person, ref product, rules);
+
+            DisplayResults(product, rulesEngine.GetCalculationString());
 
             Console.WriteLine("Run again? (y/n): ");
             var answer = Console.ReadLine();
@@ -55,6 +59,9 @@ namespace RulesEngineApplication
             Console.WriteLine("Please enter the state the person lives in: ");
             person.state = Console.ReadLine().Trim();
 
+            Console.WriteLine("Please enter the city the person lives in: ");
+            person.city = Console.ReadLine().Trim();
+
             Console.WriteLine("Please enter the person's credit score: ");
             string credit_score_string = Console.ReadLine().Trim();
 
@@ -64,6 +71,20 @@ namespace RulesEngineApplication
             }
 
             return person;
+        }
+
+
+
+        /// <summary>
+        /// Displays the result of the actions
+        /// </summary>
+        /// <param name="product">The object that has been changed via the actions</param>
+        /// <param name="interest_rate_changes">Breakout of Interest rate changes as a string</param>
+        private static void DisplayResults(Product product, string interest_rate_changes)
+        {
+            Console.WriteLine($"\nProduct Name: \t{product.name}");
+            Console.WriteLine($"\nProduct Interest Rate: \t{product.interest_rate} ({interest_rate_changes})");
+            Console.WriteLine($"\nPerson Disqualified: \t{product.disqualified}");
         }
     }
 }

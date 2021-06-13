@@ -45,16 +45,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Action.cs" />
-    <Compile Include="Condition.cs" />
+    <Compile Include="OperatorParser.cs" />
     <Compile Include="Person.cs" />
     <Compile Include="Product.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyNameIDs.cs" />
-    <Compile Include="Rule.cs" />
     <Compile Include="RuleLoader.cs" />
     <Compile Include="RulesEngine.cs" />
+    <Compile Include="TypeParser.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
