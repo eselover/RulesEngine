@@ -1,9 +1,0 @@
-Conditions,,,,,,Actions,
-State,Credit Score,Product Name,Product Interest Rate,Condition Requirement,,Interest Rate,Disqualified
-Florida,,,,All,,,TRUE
-,>=720,,,All,,-0.3,
-,<720,,,All,,0.5,
-,,7-1 ARM,,All,,0.5,
-,,,5,BASE,,5,
-Texas,>=740,,,All,,-1.2,FALSE
-,<=600,,,All,,0.7,

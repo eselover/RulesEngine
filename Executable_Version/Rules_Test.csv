@@ -1,0 +1,7 @@
+Conditions,Operator,Value,,Action,Operator,Value
+Credit_Score,>=,720,,Interest_Rate,-=,0.3
+State,==,Florida,,Disqualified,=,TRUE
+Credit_Score,<,720,,Interest_Rate,+=,0.5
+Name,==,7-1 ARM,,Interest_Rate,+=,0.5
+Interest_Rate,<,5,,Interest_Rate,=,5
+City,contains,Grand Rapids;Austin;Georgetown,,Interest_Rate,+=,0.03
